@@ -1,0 +1,17 @@
+
+# Default zone for all other queries
+. {
+    forward . 172.27.1.254 223.5.5.5
+    log
+    errors
+}
+# BEGIN ANSIBLE MANAGED BLOCK test.com
+test.com {
+    hosts {
+        172.27.0.1 abc.test.com
+        fallthrough
+    }
+    log
+    errors
+}
+# END ANSIBLE MANAGED BLOCK test.com

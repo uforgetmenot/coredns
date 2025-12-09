@@ -15,6 +15,15 @@ CoreDNS 管理工具 - 提供可视化的 Web 界面管理 CoreDNS 的 DNS 记�
 ## 技术栈
 
 - **后端**: FastAPI + Python 3.11+
+
+3.5 初始化数据目录和 Corefile 模板
+```bash
+# 确保数据目录存在
+mkdir -p data/db
+
+# 复制 Corefile 示例模板到数据目录（首次运行必需）
+cp Corefile.example data/Corefile
+```
 - **ORM**: SQLModel
 - **数据库**: SQLite3
 - **模板引擎**: Jinja2
@@ -84,8 +93,11 @@ uvicorn app.main:app --reload
 ### 快速启动
 
 \`\`\`bash
-# 准备 Corefile
-cp docker/Corefile data/Corefile
+# 准备 Corefile（示例模板位于项目根目录）
+cp Corefile.example data/Corefile
+
+# 确保数据目录存在
+mkdir -p data/db
 
 # 启动服务
 docker-compose up -d
