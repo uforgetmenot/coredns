@@ -1,0 +1,53 @@
+{% set page_title = page_title or 'CoreDNS Manager' %}
+<!DOCTYPE html>
+<html lang="en" data-theme="business">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: '#eef2ff',
+                100: '#e0e7ff',
+                500: '#6366f1',
+                600: '#4f46e5',
+                700: '#4338ca'
+              }
+            }
+          }
+        }
+      };
+    </script>
+  </head>
+  <body class="min-h-screen bg-base-200">
+    <div class="navbar bg-base-100 shadow">
+      <div class="flex-1">
+        <a class="btn btn-ghost text-xl" href="/dashboard">CoreDNS Manager</a>
+        {% if user %}
+        <div class="hidden md:flex ml-4 gap-2">
+          <a class="btn btn-sm btn-ghost" href="/dashboard">Dashboard</a>
+          <a class="btn btn-sm btn-ghost" href="/records">DNS 记录</a>
+          <a class="btn btn-sm btn-ghost" href="/corefile">Corefile</a>
+        </div>
+        {% endif %}
+      </div>
+      <div class="flex-none gap-4 pr-4">
+        {% if user %}
+        <span class="text-sm text-base-content/70">{{ user }}</span>
+        <a class="btn btn-sm btn-outline" href="/logout">Logout</a>
+        {% endif %}
+      </div>
+    </div>
+    <main class="container mx-auto px-4 py-8">
+      {% block content %}{% endblock %}
+    </main>
+    {% block extra_scripts %}{% endblock %}
+  </body>
+</html>

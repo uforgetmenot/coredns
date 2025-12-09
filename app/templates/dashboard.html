@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% set page_title = 'Dashboard - CoreDNS Manager' %}
+
+{% block content %}
+<section class="mb-8">
+  <div class="flex flex-col gap-2">
+    <div>
+      <h1 class="text-3xl font-semibold">Dashboard</h1>
+      <p class="text-base-content/70">集中管理 CoreDNS、Corefile 以及 DNS 记录</p>
+    </div>
+    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div class="stat bg-base-100 rounded-box shadow">
+        <div class="stat-title">总记录数</div>
+        <div class="stat-value" id="stat-total-records">--</div>
+        <div class="stat-desc">包含软删除记录</div>
+      </div>
+      <div class="stat bg-base-100 rounded-box shadow">
+        <div class="stat-title">Active</div>
+        <div class="stat-value text-success" id="stat-active-records">--</div>
+        <div class="stat-desc">当前生效</div>
+      </div>
+      <div class="stat bg-base-100 rounded-box shadow">
+        <div class="stat-title">Inactive</div>
+        <div class="stat-value text-warning" id="stat-inactive-records">--</div>
+        <div class="stat-desc">待启用</div>
+      </div>
+      <div class="stat bg-base-100 rounded-box shadow">
+        <div class="stat-title">Zones</div>
+        <div class="stat-value" id="stat-zones">--</div>
+        <div class="stat-desc">唯一 zone 数</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="grid gap-4 md:grid-cols-2">
+  <div class="card bg-base-100 shadow">
+    <div class="card-body">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="card-title">CoreDNS 状态</h2>
+          <p class="text-sm text-base-content/70">实时查看容器/进程状态</p>
+        </div>
+        <span class="badge badge-lg" id="coredns-badge">--</span>
+      </div>
+      <dl class="text-sm grid grid-cols-2 gap-2" id="coredns-details"></dl>
+      <div class="card-actions justify-end">
+        <button class="btn btn-primary" id="btn-reload-coredns">重载 CoreDNS</button>
+      </div>
+    </div>
+  </div>
+  <div class="card bg-base-100 shadow">
+    <div class="card-body gap-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="card-title">快捷访问</h2>
+          <p class="text-sm text-base-content/70">快速访问常用功能</p>
+        </div>
+      </div>
+      <div class="grid gap-3">
+        <a href="/records" class="btn btn-outline btn-block justify-start">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+          DNS 记录管理
+        </a>
+        <a href="/corefile" class="btn btn-outline btn-block justify-start">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+          </svg>
+          Corefile 管理
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="toast toast-end" id="toast-container"></div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/dashboard.js?v=2.0"></script>
+{% endblock %}

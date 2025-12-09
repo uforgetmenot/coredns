@@ -1,0 +1,75 @@
+services:
+  coredns:
+    image: registry.k8s.io/coredns/coredns:v1.11.3
+    container_name: coredns
+    restart: always
+    volumes:
+      - ./data/Corefile:/Corefile
+    ports:
+      - "53:53/udp"
+      - "53:53/tcp"
+    networks:
+      - coredns-net
+    command: -conf /Corefile
+    environment:
+      - TZ=Asia/Shanghai
+    sysctls:
+      net.core.somaxconn: 4000
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "sh", "-c", "echo -n > /dev/tcp/127.0.0.1/53 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  coredns-manager:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: coredns-manager
+    restart: always
+    depends_on:
+      - coredns
+    volumes:
+      - ./data/Corefile:/app/data/Corefile
+      - ./data/db:/app/data/db
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - "8000:8000"
+    networks:
+      - coredns-net
+    environment:
+      - TZ=Asia/Shanghai
+      - DATABASE_URL=sqlite:///app/data/db/coredns.db
+      - COREFILE_PATH=/app/data/Corefile
+      - COREDNS_CONTAINER_NAME=coredns
+      - LOG_LEVEL=INFO
+      - DEBUG=False
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+networks:
+  coredns-net:
+    driver: bridge
+
+volumes:
+  coredns-data:
+    driver: local

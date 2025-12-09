@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+tests/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Data (exclude DB files but keep structure)
+data/db/*.db
+data/db/*.db-shm
+data/db/*.db-wal
+
+# Docker (don't include in image)
+docker/
+docker-compose*.yml
+
+# Other
+.env
+.env.*
+!.env.example
+*.log

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% set page_title = '登录 - CoreDNS Manager' %}
+
+{% block content %}
+<div class="max-w-md mx-auto">
+  <div class="card bg-base-100 shadow-xl">
+    <div class="card-body">
+      <h2 class="card-title justify-center">登录 CoreDNS Manager</h2>
+      {% if error %}
+      <div class="alert alert-error text-sm">
+        <span>{{ error }}</span>
+      </div>
+      {% endif %}
+      <form method="post" class="space-y-4">
+        <label class="form-control w-full">
+          <div class="label">
+            <span class="label-text">用户名</span>
+          </div>
+          <input type="text" name="username" class="input input-bordered w-full" required />
+        </label>
+        <label class="form-control w-full">
+          <div class="label">
+            <span class="label-text">密码</span>
+          </div>
+          <input type="password" name="password" class="input input-bordered w-full" required />
+        </label>
+        <button type="submit" class="btn btn-primary w-full">登录</button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

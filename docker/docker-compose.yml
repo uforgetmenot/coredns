@@ -1,0 +1,33 @@
+version: "3"
+services:
+  app-coredns:
+    image: registry.k8s.io/coredns/coredns:v1.11.3
+    container_name: coredns
+    restart: always
+    volumes:
+      - ./Corefile:/Corefile
+    ports:
+      - "53:53/udp"
+      - "53:53/tcp"
+    networks:
+      - virtualink
+    command: -conf /Corefile
+    environment:
+      - TZ=Asia/Shanghai
+    sysctls:
+      net.core.somaxconn: 4000
+    ulimits:
+      nofile:
+          soft: 65535
+          hard: 65535
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  virtualink:
+    external: true
+
+

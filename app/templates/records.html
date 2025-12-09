@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% set page_title = 'DNS 记录管理 - CoreDNS Manager' %}
+
+{% block content %}
+<section class="mb-8">
+  <div class="flex flex-col gap-2">
+    <div>
+      <h1 class="text-3xl font-semibold">DNS 记录管理</h1>
+      <p class="text-base-content/70">查看、添加、编辑和删除 DNS 记录</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="card bg-base-100 shadow">
+    <div class="card-body">
+      <div class="grid gap-6 lg:grid-cols-[320px_1fr]">
+        <aside class="card bg-base-200 border border-base-300 shadow-sm">
+          <div class="card-body gap-4">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <h2 class="card-title text-lg">Zone 列表</h2>
+                <p class="text-sm text-base-content/70">点击 Zone 快速过滤解析记录</p>
+              </div>
+              <button class="btn btn-xs" id="btn-clear-zone">清空</button>
+            </div>
+            <label class="input input-bordered flex items-center gap-2">
+              <input id="zone-search" type="text" placeholder="搜索 Zone" class="grow" />
+            </label>
+            <div class="divider my-0"></div>
+            <div id="zone-list" class="flex flex-col gap-2 max-h-[520px] overflow-y-auto"></div>
+          </div>
+        </aside>
+        <div class="flex flex-col gap-4">
+          <div class="flex flex-wrap justify-between gap-4">
+            <div class="join">
+              <input id="filter-zone" type="text" placeholder="Zone" class="input input-bordered join-item" />
+              <input id="filter-search" type="text" placeholder="搜索 hostname 或 IP" class="input input-bordered join-item" />
+              <select id="filter-status" class="select select-bordered join-item">
+                <option value="">全部</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="deleted">Deleted</option>
+              </select>
+              <button class="btn btn-square join-item" id="btn-apply-filter">GO</button>
+            </div>
+            <div class="flex gap-2">
+              <button class="btn" id="btn-refresh-records">刷新</button>
+              <button class="btn btn-primary" onclick="document.getElementById('recordModal').showModal();resetRecordForm();">新增记录</button>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Zone</th>
+                  <th>Hostname</th>
+                  <th>IP</th>
+                  <th>Type</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody id="records-body"></tbody>
+            </table>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="text-sm" id="records-pagination"></div>
+            <div class="join">
+              <button class="btn btn-sm join-item" id="btn-prev-page">上一页</button>
+              <button class="btn btn-sm join-item" id="btn-next-page">下一页</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<dialog id="recordModal" class="modal">
+  <div class="modal-box w-11/12 max-w-2xl">
+    <form method="dialog">
+      <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+    </form>
+    <h3 class="font-bold text-lg mb-4" id="modal-title">新增 DNS 记录</h3>
+    <form id="record-form" class="grid md:grid-cols-2 gap-4">
+      <input type="hidden" id="record-id" />
+      <label class="form-control">
+        <span class="label-text">Zone</span>
+        <input class="input input-bordered" id="record-zone" required />
+      </label>
+      <label class="form-control">
+        <span class="label-text">Hostname</span>
+        <input class="input input-bordered" id="record-hostname" required />
+      </label>
+      <label class="form-control">
+        <span class="label-text">IP 地址</span>
+        <input class="input input-bordered" id="record-ip" required />
+      </label>
+      <label class="form-control">
+        <span class="label-text">记录类型</span>
+        <select class="select select-bordered" id="record-type">
+          <option value="A">A</option>
+          <option value="AAAA">AAAA</option>
+          <option value="CNAME">CNAME</option>
+        </select>
+      </label>
+      <label class="form-control">
+        <span class="label-text">状态</span>
+        <select class="select select-bordered" id="record-status">
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </label>
+      <label class="form-control md:col-span-2">
+        <span class="label-text">描述</span>
+        <textarea class="textarea textarea-bordered" id="record-description" rows="2"></textarea>
+      </label>
+      <div class="md:col-span-2 flex justify-end gap-2">
+        <button type="button" class="btn" onclick="document.getElementById('recordModal').close()">取消</button>
+        <button type="submit" class="btn btn-primary">保存</button>
+      </div>
+    </form>
+  </div>
+</dialog>
+
+<div class="toast toast-end" id="toast-container"></div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/records.js?v=1.1"></script>
+{% endblock %}

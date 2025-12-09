@@ -1,0 +1,1 @@
+implement docs\stories\sprint-3\story-012-base-layout.md, after that mark the completed items (Acceptance Criteria, Definition of Done) as done ([x])

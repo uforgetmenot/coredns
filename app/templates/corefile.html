@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% set page_title = 'Corefile 管理 - CoreDNS Manager' %}
+
+{% block content %}
+<section class="mb-8">
+  <div class="flex flex-col gap-2">
+    <div>
+      <h1 class="text-3xl font-semibold">Corefile 管理</h1>
+      <p class="text-base-content/70">生成、预览和管理 CoreDNS 配置文件</p>
+    </div>
+  </div>
+</section>
+
+<section class="grid gap-4">
+  <div class="card bg-base-100 shadow">
+    <div class="card-body gap-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="card-title">Corefile 管理</h2>
+          <p class="text-sm text-base-content/70">生成/预览 Corefile</p>
+        </div>
+        <span class="badge" id="corefile-generated-at">--</span>
+      </div>
+      <pre class="bg-base-200 rounded-box p-4 max-h-96 overflow-auto text-sm" id="corefile-preview">等待加载...</pre>
+      <div class="card-actions justify-end">
+        <button class="btn" id="btn-preview-corefile">刷新预览</button>
+        <button class="btn btn-secondary" id="btn-generate-corefile">生成并写入</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card bg-base-100 shadow">
+    <div class="card-body">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-xl font-semibold">Corefile 备份</h3>
+        <div class="flex gap-2">
+          <button class="btn btn-sm btn-primary" id="btn-create-backup">创建备份</button>
+          <button class="btn btn-sm" id="btn-refresh-backups">刷新列表</button>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>文件名</th>
+              <th>大小 (bytes)</th>
+              <th>创建时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="backups-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="toast toast-end" id="toast-container"></div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="/static/js/corefile.js?v=1.0"></script>
+{% endblock %}
