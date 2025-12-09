@@ -16,6 +16,7 @@ from starlette.middleware.sessions import SessionMiddleware
 
 from app import models  # noqa: F401
 from app.api import auth, corefile, coredns, records
+from app.api import settings as settings_api
 from app.config import settings
 from app.database import create_db_and_tables
 from app.routes import pages
@@ -102,6 +103,7 @@ application.include_router(auth.router)
 application.include_router(records.router)
 application.include_router(corefile.router)
 application.include_router(coredns.router)
+application.include_router(settings_api.router)
 application.include_router(pages.router)
 
 

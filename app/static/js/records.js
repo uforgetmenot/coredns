@@ -24,6 +24,22 @@ const filterZoneInput = document.getElementById('filter-zone');
 
 let zoneSearchDebounce;
 
+function escapeHtml(text = '') {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function formatDescription(description) {
+  if (!description) return '<span class="text-base-content/60">--</span>';
+  const safe = escapeHtml(description);
+  const display = description.length > 6 ? `${escapeHtml(description.slice(0, 6))}…` : safe;
+  return `<span class="tooltip" data-tip="${safe}">${display}</span>`;
+}
+
 function initRecordsPage() {
   attachListeners();
   loadZones();
@@ -173,7 +189,7 @@ function renderRecords() {
   if (!recordsBody) return;
   recordsBody.innerHTML = '';
   if (!state.records.length) {
-    recordsBody.innerHTML = '<tr><td colspan="6" class="text-center">暂无记录</td></tr>';
+    recordsBody.innerHTML = '<tr><td colspan="7" class="text-center">暂无记录</td></tr>';
     return;
   }
 
@@ -185,6 +201,7 @@ function renderRecords() {
           <td>${record.hostname}</td>
           <td><code>${record.ip_address}</code></td>
           <td>${record.record_type}</td>
+          <td>${formatDescription(record.description)}</td>
           <td>
             <span class="badge ${record.status === 'active' ? 'badge-success' : record.status === 'inactive' ? 'badge-warning' : 'badge-neutral'}">${record.status}</span>
           </td>

@@ -22,6 +22,10 @@ class Settings(BaseSettings):
     max_backup_size_bytes: int = 5 * 1024 * 1024  # 5 MB
     coredns_reload_method: str = "docker"  # docker | process
 
+    # 上级 DNS 默认配置
+    upstream_primary_dns_default: str = "8.8.8.8"
+    upstream_secondary_dns_default: str | None = "8.8.4.4"
+
     # 应用配置
     log_level: str = "INFO"
     debug: bool = False

@@ -1,4 +1,9 @@
 const toastContainer = document.getElementById('toast-container');
+const upstreamForm = document.getElementById('upstream-dns-form');
+const upstreamDefaults = {
+  primary: upstreamForm?.dataset.defaultPrimary || '',
+  secondary: upstreamForm?.dataset.defaultSecondary || ''
+};
 
 function initDashboard() {
   attachListeners();
@@ -7,12 +12,14 @@ function initDashboard() {
 
 function attachListeners() {
   document.getElementById('btn-reload-coredns')?.addEventListener('click', reloadCoreDNS);
+  document.getElementById('upstream-dns-form')?.addEventListener('submit', handleUpstreamDNSSubmit);
 }
 
 async function loadAllData() {
   await Promise.allSettled([
     loadStats(),
-    loadCoreDNSStatus()
+    loadCoreDNSStatus(),
+    loadUpstreamDNS()
   ]);
 }
 
@@ -90,6 +97,39 @@ function showToast(message, type = 'success') {
   wrapper.innerHTML = `<span>${message}</span>`;
   toastContainer.appendChild(wrapper);
   setTimeout(() => wrapper.remove(), 4000);
+}
+
+async function loadUpstreamDNS() {
+  try {
+    const payload = await fetchJson('/api/settings/upstream-dns');
+    const data = payload.data || {};
+    document.getElementById('primary-dns').value = data.primary_dns || upstreamDefaults.primary;
+    document.getElementById('secondary-dns').value = data.secondary_dns || upstreamDefaults.secondary;
+  } catch (error) {
+    console.error('加载上级 DNS 配置失败', error);
+    showToast('上级 DNS 配置加载失败', 'error');
+  }
+}
+
+async function handleUpstreamDNSSubmit(event) {
+  event.preventDefault();
+  const form = event.target;
+  const primaryDNS = form.elements['primary_dns'].value.trim();
+  const secondaryDNS = form.elements['secondary_dns'].value.trim();
+
+  try {
+    const payload = await fetchJson('/api/settings/upstream-dns', {
+      method: 'PUT',
+      body: JSON.stringify({
+        primary_dns: primaryDNS,
+        secondary_dns: secondaryDNS || null
+      })
+    });
+    showToast(payload.message || '上级 DNS 配置已更新');
+  } catch (error) {
+    console.error('更新上级 DNS 配置失败', error);
+    showToast('更新上级 DNS 配置失败', 'error');
+  }
 }
 
 if (document.readyState === 'loading') {

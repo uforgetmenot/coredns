@@ -16,7 +16,7 @@
 
 {% endfor %}
 . {
-    forward . 8.8.8.8 8.8.4.4
+    forward . {{ primary_dns }}{% if secondary_dns %} {{ secondary_dns }}{% endif %}
     log
     errors
     cache 30

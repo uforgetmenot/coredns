@@ -6,6 +6,7 @@ from fastapi import APIRouter, Form, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
+from app.config import settings
 from app.services.auth_service import get_auth_service
 
 router = APIRouter(include_in_schema=False)
@@ -82,6 +83,8 @@ async def dashboard(request: Request):
         {
             "request": request,
             "user": user,
+            "default_primary_dns": settings.upstream_primary_dns_default,
+            "default_secondary_dns": settings.upstream_secondary_dns_default,
         },
     )
 

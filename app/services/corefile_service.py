@@ -48,7 +48,18 @@ class CorefileService:
 
         zones = self._group_records_by_zone(records)
         generated_at = datetime.now(timezone.utc).isoformat()
-        content = self.template.render(zones=zones, generated_at=generated_at)
+
+        # 获取上级 DNS 配置
+        from app.services.settings_service import SettingsService
+        settings_service = SettingsService(session)
+        primary_dns, secondary_dns = settings_service.get_upstream_dns()
+
+        content = self.template.render(
+            zones=zones,
+            generated_at=generated_at,
+            primary_dns=primary_dns,
+            secondary_dns=secondary_dns
+        )
 
         stats = {
             "total_zones": len(zones),
