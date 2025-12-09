@@ -3,6 +3,8 @@ CoreDNS Manager - FastAPI 应用入口
 提供 DNS 记录管理的 REST API
 """
 
+import asyncio
+import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
 
@@ -13,10 +15,25 @@ from fastapi.responses import RedirectResponse
 from starlette.middleware.sessions import SessionMiddleware
 
 from app import models  # noqa: F401
-from app.api import corefile, coredns, records
+from app.api import auth, corefile, coredns, records
 from app.config import settings
 from app.database import create_db_and_tables
 from app.routes import pages
+from app.services.auth_service import AuthService, get_auth_service
+
+logger = logging.getLogger(__name__)
+
+
+async def token_refresh_task(auth_service: AuthService):
+    """定期刷新 OAuth2 Token 的后台任务"""
+    while True:
+        try:
+            await asyncio.sleep(settings.oauth2_token_refresh_interval)
+            if settings.oauth2_enabled:
+                logger.info("Running scheduled token refresh")
+                auth_service.refresh_all_tokens()
+        except Exception as e:
+            logger.error(f"Error in token refresh task: {e}")
 
 
 @asynccontextmanager
@@ -27,16 +44,30 @@ async def lifespan(app_instance: FastAPI):
     print(f"📊 Debug mode: {settings.debug}")
     print(f"📁 Database: {settings.database_url}")
     print(f"📄 Corefile: {settings.corefile_path}")
+    print(f"🔐 OAuth2 enabled: {settings.oauth2_enabled}")
 
     # 创建数据库表
     print("📦 Creating database tables...")
     create_db_and_tables()
     print("✅ Database initialized successfully")
 
+    # 启动 Token 刷新后台任务
+    auth_service = get_auth_service()
+    refresh_task = None
+    if settings.oauth2_enabled:
+        print(f"⏱️  Starting token refresh task (interval: {settings.oauth2_token_refresh_interval}s)")
+        refresh_task = asyncio.create_task(token_refresh_task(auth_service))
+
     yield
 
     # 关闭
     print("👋 CoreDNS Manager shutting down...")
+    if refresh_task:
+        refresh_task.cancel()
+        try:
+            await refresh_task
+        except asyncio.CancelledError:
+            pass
 
 
 # 创建 FastAPI 应用实例
@@ -67,6 +98,7 @@ static_dir = Path(__file__).resolve().parent / "static"
 application.mount("/static", StaticFiles(directory=static_dir), name="static")
 
 # 注册 API 路由
+application.include_router(auth.router)
 application.include_router(records.router)
 application.include_router(corefile.router)
 application.include_router(coredns.router)

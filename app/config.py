@@ -29,6 +29,14 @@ class Settings(BaseSettings):
     admin_username: str = "admin"
     admin_password: str = "admin123"
 
+    # OAuth2 外部认证配置
+    oauth2_enabled: bool = True  # 是否启用外部 OAuth2 认证
+    oauth2_server_url: str = "http://core.seadee.com.cn:8099"  # OAuth2 认证服务器地址
+    oauth2_token_endpoint: str = "/auth/token"  # Token 获取端点
+    oauth2_userinfo_endpoint: str = "/auth/me"  # 用户信息端点
+    oauth2_refresh_endpoint: str = "/auth/refresh"  # Token 刷新端点
+    oauth2_token_refresh_interval: int = 3600  # Token 刷新间隔（秒）
+
     # 时区
     timezone: str = "Asia/Shanghai"
 

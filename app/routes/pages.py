@@ -6,11 +6,11 @@ from fastapi import APIRouter, Form, Request, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
-from app.services.auth_service import AuthService
+from app.services.auth_service import get_auth_service
 
 router = APIRouter(include_in_schema=False)
 templates = Jinja2Templates(directory="app/templates")
-auth_service = AuthService()
+auth_service = get_auth_service()
 
 
 def _get_session_user(request: Request) -> str | None:
@@ -39,8 +39,11 @@ async def login_submit(request: Request, username: str = Form(...), password: st
     """Process login form submissions."""
 
     try:
-        auth_service.authenticate(username=username, password=password)
-        request.session["user"] = username
+        username_authenticated, user_info = auth_service.authenticate(
+            username=username, password=password
+        )
+        request.session["user"] = username_authenticated
+        request.session["user_info"] = user_info.model_dump()
         return RedirectResponse(url="/dashboard", status_code=status.HTTP_303_SEE_OTHER)
     except Exception as exc:  # pragma: no cover - UI level feedback only
         status_code = exc.status_code if hasattr(exc, "status_code") else status.HTTP_401_UNAUTHORIZED
@@ -59,6 +62,9 @@ async def login_submit(request: Request, username: str = Form(...), password: st
 async def logout(request: Request):
     """Clear session and redirect to login."""
 
+    user = _get_session_user(request)
+    if user:
+        auth_service.logout(user)
     request.session.clear()
     return RedirectResponse(url="/login", status_code=status.HTTP_303_SEE_OTHER)
 

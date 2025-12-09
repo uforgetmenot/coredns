@@ -19,7 +19,7 @@ const toastContainer = document.getElementById('toast-container');
 const recordModalElement = document.getElementById('recordModal');
 const zoneListElement = document.getElementById('zone-list');
 const zoneSearchInput = document.getElementById('zone-search');
-const zoneClearButton = document.getElementById('btn-clear-zone');
+const zoneRefreshButton = document.getElementById('btn-clear-zone');
 const filterZoneInput = document.getElementById('filter-zone');
 
 let zoneSearchDebounce;
@@ -85,13 +85,12 @@ function attachListeners() {
     zoneSearchDebounce = setTimeout(() => loadZones(), 250);
   });
 
-  zoneClearButton?.addEventListener('click', () => {
-    applyZoneFilter('');
+  zoneRefreshButton?.addEventListener('click', () => {
     if (zoneSearchInput) {
-      zoneSearchInput.value = '';
-      state.zoneSearch = '';
-      loadZones();
+      state.zoneSearch = zoneSearchInput.value.trim();
     }
+    loadZones();
+    loadRecords(true);
   });
 }
 
