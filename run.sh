@@ -74,7 +74,7 @@ COREFILE
 
 run_dev() {
     local host="${HOST:-127.0.0.1}"
-    local port="${PORT:-8000}"
+    local port="${PORT:-8003}"
     poetry run uvicorn app.main:app --host "$host" --port "$port" --reload "$@"
 }
 

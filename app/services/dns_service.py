@@ -2,6 +2,7 @@
 DNS Service Layer - Business logic for DNS record operations
 """
 
+import logging
 from datetime import datetime, timezone
 from typing import Dict, List, Optional, Tuple
 
@@ -16,10 +17,34 @@ from app.schemas.dns_record import (
     DNSRecordSearchParams,
     DNSRecordUpdate,
 )
+from app.config import settings
+
+logger = logging.getLogger(__name__)
 
 
 class DNSService:
     """DNS 记录服务层"""
+
+    @staticmethod
+    def _trigger_corefile_update(session: Session) -> None:
+        """触发 Corefile 更新和 CoreDNS 重载"""
+        try:
+            from app.services.corefile_service import CorefileService
+
+            corefile_service = CorefileService()
+            result = corefile_service.generate_corefile(
+                session=session,
+                output_path=settings.corefile_path,
+                auto_reload=True
+            )
+
+            logger.info(
+                f"Corefile auto-update triggered: {result.get('stats', {})} "
+                f"reload_result: {result.get('reload_result', 'N/A')}"
+            )
+        except Exception as exc:
+            logger.error(f"Failed to auto-update Corefile: {exc}")
+            # 不抛出异常，避免影响主要的 DNS 记录操作
 
     @staticmethod
     def create_record(session: Session, record_data: DNSRecordCreate) -> DNSRecord:
@@ -43,6 +68,9 @@ class DNSService:
         session.add(db_record)
         session.commit()
         session.refresh(db_record)
+
+        # 自动更新 Corefile 并重载 CoreDNS
+        DNSService._trigger_corefile_update(session)
 
         return db_record
 
@@ -85,6 +113,9 @@ class DNSService:
         session.add(db_record)
         session.commit()
         session.refresh(db_record)
+
+        # 自动更新 Corefile 并重载 CoreDNS
+        DNSService._trigger_corefile_update(session)
 
         return db_record
 
@@ -133,6 +164,9 @@ class DNSService:
         session.commit()
         session.refresh(db_record)
 
+        # 自动更新 Corefile 并重载 CoreDNS
+        DNSService._trigger_corefile_update(session)
+
         return db_record
 
     @staticmethod
@@ -155,6 +189,9 @@ class DNSService:
             session.commit()
             session.refresh(db_record)
 
+            # 自动更新 Corefile 并重载 CoreDNS
+            DNSService._trigger_corefile_update(session)
+
             return {
                 "message": "DNS record deleted successfully",
                 "mode": "soft",
@@ -163,6 +200,9 @@ class DNSService:
         if mode == "hard":
             session.delete(db_record)
             session.commit()
+
+            # 自动更新 Corefile 并重载 CoreDNS
+            DNSService._trigger_corefile_update(session)
 
             return {
                 "message": "DNS record permanently deleted",

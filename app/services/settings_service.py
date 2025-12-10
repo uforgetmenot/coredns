@@ -57,6 +57,26 @@ class SettingsService:
         # 返回已保存的值或默认值（primary 会回退到默认值）；若 secondary 未配置则返回 None
         return primary, secondary if secondary else None
 
+    def _trigger_corefile_update(self) -> None:
+        """触发 Corefile 更新和 CoreDNS 重载"""
+        try:
+            from app.services.corefile_service import CorefileService
+
+            corefile_service = CorefileService()
+            result = corefile_service.generate_corefile(
+                session=self.session,
+                output_path=settings.corefile_path,
+                auto_reload=True
+            )
+
+            logger.info(
+                f"Corefile auto-update triggered (upstream DNS change): "
+                f"{result.get('stats', {})} reload_result: {result.get('reload_result', 'N/A')}"
+            )
+        except Exception as exc:
+            logger.error(f"Failed to auto-update Corefile: {exc}")
+            # 不抛出异常，避免影响主要的设置更新操作
+
     def set_upstream_dns(
         self, primary_dns: str, secondary_dns: Optional[str] = None
     ) -> tuple[str, Optional[str]]:
@@ -84,6 +104,10 @@ class SettingsService:
                 self.session.commit()
 
         logger.info(f"Upstream DNS updated: {primary_dns}, {secondary_dns}")
+
+        # 自动更新 Corefile 并重载 CoreDNS
+        self._trigger_corefile_update()
+
         return primary_dns, secondary_dns
 
     def initialize_default_settings(self) -> None:
