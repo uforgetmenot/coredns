@@ -26,7 +26,7 @@ class CorefileBackup(SQLModel, table=True):
     class Config:
         json_schema_extra = {
             "example": {
-                "content": ". {\\n  forward . 8.8.8.8\\n}",
+                "content": ". {\\n  forward . 223.5.5.5\\n}",
                 "backup_reason": "Before adding new DNS record",
             }
         }

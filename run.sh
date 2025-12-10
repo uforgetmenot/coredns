@@ -63,7 +63,7 @@ prepare_runtime_assets() {
         else
             cat > data/Corefile <<'COREFILE'
 . {
-    forward . 8.8.8.8
+    forward . 223.5.5.5
     log
     errors
 }

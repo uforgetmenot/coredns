@@ -57,7 +57,7 @@ def test_create_zone(session):
         name="example.com",
         fallthrough=True,
         log_enabled=True,
-        upstream_dns="8.8.8.8",
+        upstream_dns="223.5.5.5",
     )
     session.add(zone)
     session.commit()
@@ -86,7 +86,7 @@ def test_zone_unique_constraint(session):
 def test_create_corefile_backup(session):
     """测试创建 Corefile 备份"""
     backup = CorefileBackup(
-        content=". {\\n  forward . 8.8.8.8\\n}",
+        content=". {\\n  forward . 223.5.5.5\\n}",
         backup_reason="Before update",
     )
     session.add(backup)

@@ -279,7 +279,7 @@ class Zone(SQLModel, table=True):
     name: str = Field(unique=True, index=True)  # Zone 名称
     fallthrough: bool = Field(default=True)     # 是否启用 fallthrough
     log_enabled: bool = Field(default=True)     # 是否启用日志
-    upstream_dns: Optional[str] = None          # 上游 DNS (如 "8.8.8.8")
+    upstream_dns: Optional[str] = None          # 上游 DNS (如 "223.5.5.5")
     status: str = Field(default="active")       # 状态
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)

@@ -50,7 +50,7 @@
 
 2. **app/templates/Corefile.j2**
    - 第 19 行: 更新 forward 指令支持动态 DNS
-   - 原: `forward . 8.8.8.8 8.8.4.4`
+   - 原: `forward . 223.5.5.5 223.6.6.6`
    - 新: `forward . {{ primary_dns }}{% if secondary_dns %} {{ secondary_dns }}{% endif %}`
 
 3. **app/services/corefile_service.py**

@@ -36,6 +36,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: coredns-manager
+    image: coredns-manager:latest
     restart: always
     depends_on:
       - coredns

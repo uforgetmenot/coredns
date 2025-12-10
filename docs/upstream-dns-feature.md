@@ -36,8 +36,8 @@ GET /api/settings/upstream-dns
 {
   "success": true,
   "data": {
-    "primary_dns": "8.8.8.8",
-    "secondary_dns": "8.8.4.4"
+    "primary_dns": "223.5.5.5",
+    "secondary_dns": "223.6.6.6"
   },
   "message": "Upstream DNS settings retrieved successfully"
 }
@@ -85,7 +85,7 @@ Content-Type: application/json
 
 ```
 . {
-    forward . 8.8.8.8 8.8.4.4
+    forward . 223.5.5.5 223.6.6.6
     log
     errors
     cache 30
@@ -132,8 +132,8 @@ Content-Type: application/json
 ## 默认配置
 
 如果未配置上级 DNS，系统将使用以下默认值：
-- 主 DNS: `8.8.8.8` (Google DNS)
-- 备用 DNS: `8.8.4.4` (Google DNS)
+- 主 DNS: `223.5.5.5` (Google DNS)
+- 备用 DNS: `223.6.6.6` (Google DNS)
 
 ## 测试
 

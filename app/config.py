@@ -23,8 +23,8 @@ class Settings(BaseSettings):
     coredns_reload_method: str = "docker"  # docker | process
 
     # 上级 DNS 默认配置
-    upstream_primary_dns_default: str = "8.8.8.8"
-    upstream_secondary_dns_default: str | None = "8.8.4.4"
+    upstream_primary_dns_default: str = "223.5.5.5"
+    upstream_secondary_dns_default: str | None = "223.6.6.6"
 
     # 应用配置
     log_level: str = "INFO"

@@ -17,6 +17,7 @@
 {% endfor %}
 . {
     forward . {{ primary_dns }}{% if secondary_dns %} {{ secondary_dns }}{% endif %}
+    
     log
     errors
     cache 30

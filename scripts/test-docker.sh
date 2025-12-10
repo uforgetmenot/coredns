@@ -15,7 +15,7 @@ if [ ! -f data/Corefile ]; then
     echo "📄 Creating default Corefile..."
     cat > data/Corefile << 'EOF'
 . {
-    forward . 8.8.8.8
+    forward . 223.5.5.5
     log
     errors
 }

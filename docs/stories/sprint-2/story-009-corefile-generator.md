@@ -54,7 +54,7 @@ Corefile 是 CoreDNS 的核心配置文件，定义了 DNS 解析规则。本功
   }
 
   . {
-      forward . 8.8.8.8 8.8.4.4
+      forward . 223.5.5.5 223.6.6.6
       log
       errors
       cache 30
@@ -112,7 +112,7 @@ Corefile 是 CoreDNS 的核心配置文件，定义了 DNS 解析规则。本功
 
 {% endfor %}
 . {
-    forward . 8.8.8.8 8.8.4.4
+    forward . 223.5.5.5 223.6.6.6
     log
     errors
     cache 30

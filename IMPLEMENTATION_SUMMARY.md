@@ -16,7 +16,7 @@
 创建了 `SettingsService` 类，提供以下方法：
 - `get_upstream_dns()`: 获取上级 DNS 配置
 - `set_upstream_dns(primary, secondary)`: 设置上级 DNS 配置
-- `initialize_default_settings()`: 初始化默认配置（主: 8.8.8.8, 备: 8.8.4.4）
+- `initialize_default_settings()`: 初始化默认配置（主: 223.5.5.5, 备: 223.6.6.6）
 
 ### 3. Schema 层（`app/schemas/settings.py`）
 定义了以下数据模型：
@@ -99,7 +99,7 @@
 ### 示例 2: 只使用一个 DNS
 ```json
 {
-  "primary_dns": "8.8.8.8",
+  "primary_dns": "223.5.5.5",
   "secondary_dns": null
 }
 ```
@@ -107,7 +107,7 @@
 生成的 Corefile:
 ```
 . {
-    forward . 8.8.8.8
+    forward . 223.5.5.5
     log
     errors
     cache 30
@@ -178,8 +178,8 @@ $ python3 -m pytest tests/test_settings.py tests/test_corefile_upstream_dns.py -
 
 ## 默认配置
 
-- 主 DNS: `8.8.8.8` (Google Public DNS)
-- 备用 DNS: `8.8.4.4` (Google Public DNS)
+- 主 DNS: `223.5.5.5` (Google Public DNS)
+- 备用 DNS: `223.6.6.6` (Google Public DNS)
 
 ## 下一步建议
 

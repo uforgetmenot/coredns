@@ -29,8 +29,8 @@ curl http://localhost:8000/api/settings/upstream-dns
 ## 常用 DNS 服务器参考
 
 ### Google Public DNS
-- 主: `8.8.8.8`
-- 备: `8.8.4.4`
+- 主: `223.5.5.5`
+- 备: `223.6.6.6`
 
 ### Cloudflare DNS
 - 主: `1.1.1.1`

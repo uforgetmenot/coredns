@@ -44,7 +44,7 @@ class Zone(SQLModel, table=True):
                 "name": "seadee.com.cn",
                 "fallthrough": True,
                 "log_enabled": True,
-                "upstream_dns": "8.8.8.8",
+                "upstream_dns": "223.5.5.5",
                 "status": "active",
             }
         }
